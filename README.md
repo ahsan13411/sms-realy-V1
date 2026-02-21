@@ -1,8 +1,33 @@
 ![Banner](./banner.png)
 
+<div align="center">
 
+```text
+           .o888888o.            8888888 8888888888 ,o888888o.     
+          8888     `88.                8 8888    . 8888     `88.   
+       ,8 8888       `8.               8 8888   ,8 8888       `8.  
+       88 8888                         8 8888   88 8888            
+       88 8888                         8 8888   88 8888            
+       88 8888                         8 8888   88 8888            
+       88 8888                         8 8888   88 8888            
+       `8 8888       .8.               8 8888   `8 8888       .8.  
+          8888     ,88'                8 8888    ` 8888     ,88'   
+           `8888888P'                  8 8888       `8888888P'     
+
+        8 888888888o.      8 8888 8888888 8888888888 8888888 8888888888
+        8 8888    `88.     8 8888       8 8888             8 8888      
+        8 8888     `88     8 8888       8 8888             8 8888      
+        8 8888     ,88     8 8888       8 8888             8 8888      
+        8 8888.   ,88'     8 8888       8 8888             8 8888      
+        8 888888888P'      8 8888       8 8888             8 8888      
+        8 8888`8b          8 8888       8 8888             8 8888      
+        8 8888 `8b.        8 8888       8 8888             8 8888      
+        8 8888   `8b.      8 8888       8 8888             8 8888      
+        8 8888     `88.    8 8888       8 8888             8 8888      
+```
 
 ### [ AH4 TC | SMS RELAY INFRASTRUCTURE v1.0 ]
+
 **"Our democracy has been hacked. Our privacy has been compromised. The system is broken. We are here to show you how."**
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-red?style=for-the-badge&logo=python)](https://www.python.org/)
@@ -10,6 +35,11 @@
 [![Team](https://img.shields.io/badge/Team-AH4%20Team-red?style=for-the-badge)](https://github.com/ahsan13411)
 
 </div>
+
+---
+
+## 🎭 Hacker Philosophy
+> "Control is an illusion. We live in a world where everything is connected, yet everything is vulnerable. We don't just break systems; we reveal the cracks that were already there. Information wants to be free, and we are its messengers. We are the architects of chaos in a world that demands order. We are the ghost in the machine."
 
 ---
 
@@ -69,16 +99,6 @@ The tool extracts and displays local machine vitals during initialization:
 - **Node ID:** Hostname and IP identifiers.
 - **Hardware:** MAC Address and CPU Architecture.
 - **Kernel:** Operating system and build version.
-
----
-
-## ⚠️ Tactical Warning (Mandatory Reading)
-**THIS INFRASTRUCTURE IS FOR EDUCATIONAL AND AUTHORIZED NETWORK RESEARCH ONLY.**
-
-The **AH4 Team** providing this system assumes **zero responsibility** for unauthorized deployment or malicious intent. Use this tool with caution.
-- **Do not** use this for illegal harassment.
-- **Do not** use this to violate global privacy laws.
-- **Do not** get caught.
 
 ---
 
