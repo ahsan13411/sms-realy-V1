@@ -58,7 +58,7 @@
 ### 📥 Protocol Initialization
 ```bash
 # Clone the encrypted repository
-git clone https://github.com/ahsan13411/AH4-SMS-boomer.git
+git clone https://github.com/ahsan13411/sms-realy-V1.git
 cd AH4-SMS-boomer
 
 # Install sub-module dependencies
