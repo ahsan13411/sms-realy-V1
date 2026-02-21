@@ -59,7 +59,7 @@
 ```bash
 # Clone the encrypted repository
 git clone https://github.com/ahsan13411/sms-realy-V1.git
-cd AH4-SMS-boomer
+cd sms-realy-V1
 
 # Install sub-module dependencies
 pip install -r requirements.txt
