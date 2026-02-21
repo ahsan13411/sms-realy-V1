@@ -16,7 +16,7 @@
 
 ---
 
-## 🎭 Hacker Philosophy
+## 🎭 
 > "Control is an illusion. We live in a world where everything is connected, yet everything is vulnerable. We don't just break systems; we reveal the cracks that were already there. Information wants to be free, and we are its messengers. We are the architects of chaos in a world that demands order. We are the ghost in the machine."
 
 ---
@@ -87,5 +87,5 @@ If the system experiences a handshake failure:
 
 ---
 <div align="center">
-  <b>"Hello, friend. Let's get to work."</b> 💀
+  <b>"FUCK SOCIETY."</b> 
 </div>
