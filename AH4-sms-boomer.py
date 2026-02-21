@@ -173,7 +173,7 @@ def _print_banner():
         "             8 8888     `88.    8 8888       8 8888             8 8888      ",
         f"{_c['e']}{_c['w']}{'=' * 80}",
         f"{_c['r']}{_c['B']}           [ AH4 TC | SMS RELAY SYSTEM V1.0 ]{_c['e']}",
-        f"{_c['w']}           [ FUCK SOCIETY. CREATED BY AHSAN. ]{_c['e']}",
+        f"{_c['w']}           [ HELLO FRIEND. CREATED BY AHSAN. ]{_c['e']}",
         f"{_c['w']}{'=' * 80}",
         f"\n{_c['r']}[NODE INFO]{_c['e']}",
         f"{_c['w']}┌─ timestamp: {_c['r']}{current_date} - {current_time}{_c['e']}",
