@@ -38,7 +38,7 @@ Developed and Maintained by: **AHSAN** & **AH4 Team**
 
 ```bash
 # Clone the encrypted repository
-git clone https://github.com/YourUsername/AH4-sms-boomer
+git clone https://github.com/ahsan13411/AH4-SMS-boomer.git
 cd AH4-sms-boomer
 
 # Initialize the virtual environment (Optional)
@@ -113,8 +113,8 @@ The **AH4 Team** provides this infrastructure to demonstrate vulnerabilities in 
 
 ## 🎉 Credits & Alliance
 
-**Lead Developer:** [AHSAN](https://github.com/Ahsan)
-**Core Engineering:** [AH4 Team](https://github.com/AH4-Team)
+**Lead Developer:** [AHSAN](https://github.com/ahsan13411)
+**Core Engineering:** [AH4 Team](https://github.com/ahsan13411/AH4-SMS-boomer)
 
 **Special Acknowledgments:**
 - The fsociety collective.
