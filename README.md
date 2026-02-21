@@ -1,3 +1,5 @@
+![Banner](./banner.png)
+
 # 🚀 AH4-SMS-boomer (AH4 TC)
 ### Powerful, Fast, and Easy-to-Use SMS Testing Tool
 
