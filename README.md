@@ -3,7 +3,7 @@
 
 
 ### [ AH4 TC | SMS RELAY INFRASTRUCTURE v1.0 ]
-**"Our democracy has been hacked. Our privacy has been compromised. The system is broken. We are fsociety."**
+**"Our democracy has been hacked. Our privacy has been compromised. The system is broken. We are here to show you how."**
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-red?style=for-the-badge&logo=python)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/Status-Operational-red?style=for-the-badge)](https://github.com/ahsan13411/AH4-SMS-boomer)
