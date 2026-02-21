@@ -16,7 +16,12 @@ Welcome to **AH4-SMS-boomer**, a professional SMS relay tool designed for networ
 - **35+ Working APIs:** Support for BTCL, Grameenphone, Healthcare, and E-commerce services.
 - **Two Simple Modes:**
   - **👻 Ghost Mode:** Sends messages steadily and slowly to avoid being blocked.
-  - **⚡ Blitz Mode:** Sends messages as fast as possible for maximum impact.
+  - **⚡ Chaos Flood:** Advanced burst mode with random jitter, task shuffling, and maximum throughput.
+- **🛡️ Advanced OPSEC:** Spoofs Referers (Google, FB) and randomizes request patterns to bypass WAFs.
+- **🔍 Phone Tracking:** Automatically extracts carrier, region, and timezone info for any number.
+- **🌐 Proxy Support:** Load custom proxies from `proxies.txt` or use the Auto-Scraper.
+- **📡 Auto-Scrape:** Instantly fetches thousands of fresh SOCKS4, SOCKS5, and HTTP proxies from global GitHub repositories.
+- **📱 Device Spoofing:** Rotates through 500+ random User-Agents and IP headers to mimic real users.
 - **System Dashboard:** View your hardware info (CPU, MAC address, and IP) right in the app.
 - **Auto-Formatting:** Just enter the number; the tool handles the country code automatically.
 - **Smart Recovery:** Automatically restarts if it runs into connection issues.
