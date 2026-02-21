@@ -1,88 +1,117 @@
 ![Banner](./banner.png)
 
-# 🚀 AH4-SMS-boomer (AH4 TC)
-### Powerful, Fast, and Easy-to-Use SMS Testing Tool
+<div align="center">
 
-Welcome to **AH4-SMS-boomer**, a professional SMS relay tool designed for network testing and fun. Created by **Ahsan** and the **AH4 Team**, this tool combines over 35+ services into one simple interface.
+```text
+           .o888888o.            8888888 8888888888 ,o888888o.     
+          8888     `88.                8 8888    . 8888     `88.   
+       ,8 8888       `8.               8 8888   ,8 8888       `8.  
+       88 8888                         8 8888   88 8888            
+       88 8888                         8 8888   88 8888            
+       88 8888                         8 8888   88 8888            
+       88 8888                         8 8888   88 8888            
+       `8 8888       .8.               8 8888   `8 8888       .8.  
+          8888     ,88'                8 8888    ` 8888     ,88'   
+           `8888888P'                  8 8888       `8888888P'     
 
----
-
-## 👤 Credits & Links
-- **Lead Developer:** [AHSAN](https://github.com/ahsan13411)
-- **Official Repository:** [AH4-SMS-boomer](https://github.com/ahsan13411/AH4-SMS-boomer)
-- **Team:** **AH4 Team**
-
----
-
-## ✨ Key Features
-- **35+ Working APIs:** Support for BTCL, Grameenphone, Healthcare, and E-commerce services.
-- **Two Simple Modes:**
-  - **👻 Ghost Mode:** Sends messages steadily and slowly to avoid being blocked.
-  - **⚡ Chaos Flood:** Advanced burst mode with random jitter, task shuffling, and maximum throughput.
-- **🛡️ Advanced OPSEC:** Spoofs Referers (Google, FB) and randomizes request patterns to bypass WAFs.
-- **🔍 Phone Tracking:** Automatically extracts carrier, region, and timezone info for any number.
-- **🌐 Proxy Support:** Load custom proxies from `proxies.txt` or use the Auto-Scraper.
-- **📡 Auto-Scrape:** Instantly fetches thousands of fresh SOCKS4, SOCKS5, and HTTP proxies from global GitHub repositories.
-- **📱 Device Spoofing:** Rotates through 500+ random User-Agents and IP headers to mimic real users.
-- **System Dashboard:** View your hardware info (CPU, MAC address, and IP) right in the app.
-- **Auto-Formatting:** Just enter the number; the tool handles the country code automatically.
-- **Smart Recovery:** Automatically restarts if it runs into connection issues.
-
----
-
-## 🛠️ How to Install
-
-### 1. Download the Tool
-Open your terminal (CMD, PowerShell, or Termux) and run:
-```bash
-git clone https://github.com/ahsan13411/AH4-SMS-boomer.git
-cd AH4-SMS-boomer
+        8 888888888o.      8 8888 8888888 8888888888 8888888 8888888888
+        8 8888    `88.     8 8888       8 8888             8 8888      
+        8 8888     `88     8 8888       8 8888             8 8888      
+        8 8888     ,88     8 8888       8 8888             8 8888      
+        8 8888.   ,88'     8 8888       8 8888             8 8888      
+        8 888888888P'      8 8888       8 8888             8 8888      
+        8 8888`8b          8 8888       8 8888             8 8888      
+        8 8888 `8b.        8 8888       8 8888             8 8888      
+        8 8888   `8b.      8 8888       8 8888             8 8888      
+        8 8888     `88.    8 8888       8 8888             8 8888      
 ```
 
-### 2. Install Dependencies
-Make sure you have Python installed, then run:
+### [ AH4 TC | SMS RELAY INFRASTRUCTURE v1.0 ]
+**"Our democracy has been hacked. Our privacy has been compromised. The system is broken. We are fsociety."**
+
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-red?style=for-the-badge&logo=python)](https://www.python.org/)
+[![Status](https://img.shields.io/badge/Status-Operational-red?style=for-the-badge)](https://github.com/ahsan13411/AH4-SMS-boomer)
+[![Team](https://img.shields.io/badge/Team-AH4%20Team-red?style=for-the-badge)](https://github.com/ahsan13411)
+
+</div>
+
+---
+
+## 👤 Credits & Intelligence
+- **Lead Operator:** [AHSAN](https://github.com/ahsan13411)
+- **Central Intelligence:** [AH4 Team](https://github.com/ahsan13411/AH4-SMS-boomer)
+- **Sector:** **Network Infiltration & Protocol Research**
+
+---
+
+## 🚀 Advanced Infiltration Capabilities
+
+- **35+ API Node Relays:** Exploiting vulnerabilities in BTCL, Grameenphone, and diverse healthcare/e-commerce gateways.
+- **Dynamic Protocol Execution:**
+  - **👻 GHOST MODE:** Stealthy, sequential packet delivery designed to bypass basic firewall detection.
+  - **🌪️ CHAOS FLOOD:** Advanced asynchronous wave injection with **Micro-Jitter** and **Task Shuffling** for maximum WAF confusion.
+- **📡 Auto-Scrape Harvest:** Integrated global proxy harvester fetching thousands of fresh SOCKS4, SOCKS5, and HTTP IPs in real-time.
+- **🔍 Node Telemetry:** Automatically extracts carrier metadata, geographical region, and timezone of the target node.
+- **📱 Device Spoofing Engine:** Rotates through a pool of 500+ unique User-Agents and spoofed IP headers (X-Forwarded-For).
+- **🛡️ Resilience Protocols:** Self-healing core that automatically restarts on socket failures and handles SIGINT/SIGTSTP signals.
+
+---
+
+## 🛠️ Deployment Instructions
+
+### 📥 Protocol Initialization
 ```bash
+# Clone the encrypted repository
+git clone https://github.com/ahsan13411/AH4-SMS-boomer.git
+cd AH4-SMS-boomer
+
+# Install sub-module dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Start the Tool
+### ⚡ System Execution
 ```bash
 python AH4-sms-boomer.py
 ```
 
 ---
 
-## 🎯 How to Use
-1. **Launch the script** using the command above.
-2. **Choose your mode:** Type `1` for Ghost Mode (Stealth) or `2` for Blitz Mode (Fast).
-3. **Enter the target number:** Enter the phone number you want to test.
-4. **Relax:** The tool will handle the rest. Press `CTRL+C` anytime to stop.
+## 🎯 Operational Parameters
+1. **Selection:** Choose between **GHOST** (Stealth) or **CHAOS** (Flood) protocols.
+2. **Proxy Config:**
+   - **[1]** Direct IP (Expose Node)
+   - **[2]** Local Proxy (Load `proxies.txt`)
+   - **[3]** Global Harvest (Auto-fetch thousands of nodes)
+3. **Targeting:** Enter the target node's address (Phone number).
+4. **Impact:** Monitor the real-time breach statistics and infiltration logs.
 
 ---
 
-## 🧬 System Info [Node Info]
-The tool displays your current system status for better tracking:
-- **Timestamp:** Current time.
-- **IPv4 & MAC:** Your network identifiers.
-- **CPU:** Your processor model.
-- **Kernel:** Your Operating System version.
+## 🧬 Node Telemetry [System Info]
+The tool extracts and displays local machine vitals during initialization:
+- **Timestamp:** Network Time Protocol sync.
+- **Node ID:** Hostname and IP identifiers.
+- **Hardware:** MAC Address and CPU Architecture.
+- **Kernel:** Operating system and build version.
 
 ---
 
-## ⚠️ Important Disclaimer
-**FOR EDUCATIONAL PURPOSES ONLY.**
+## ⚠️ Tactical Warning (Mandatory Reading)
+**THIS INFRASTRUCTURE IS FOR EDUCATIONAL AND AUTHORIZED NETWORK RESEARCH ONLY.**
 
-This tool was created by the **AH4 Team** to demonstrate how SMS gateways work. 
-- Please **do not** use this for harassment or illegal activities.
-- The developers are **not responsible** for any misuse of this tool.
-- Use it responsibly and respect others' privacy.
-
----
-
-## 🚨 Troubleshooting
-If you see errors, try updating your Python packages:
-- **SSL Errors:** `pip install --upgrade certifi urllib3`
-- **Connection Errors:** `pip install -U aiohttp async-timeout`
+The **AH4 Team** providing this system assumes **zero responsibility** for unauthorized deployment or malicious intent. Use this tool with caution.
+- **Do not** use this for illegal harassment.
+- **Do not** use this to violate global privacy laws.
+- **Do not** get caught.
 
 ---
-**"Hello, friend. Let's get to work."** 💀
+
+## 🚨 Protocol Recovery
+If the system experiences a handshake failure:
+- **SSL Issues:** `pip install --upgrade certifi urllib3`
+- **Socket Latency:** `pip install -U aiohttp async-timeout`
+
+---
+<div align="center">
+  <b>"Hello, friend. Let's get to work."</b> 💀
+</div>
