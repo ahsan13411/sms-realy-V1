@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 ### ⚡ System Execution
 ```bash
-python AH4-sms-boomer.py
+python sms-realy-V1.py
 ```
 
 ---
