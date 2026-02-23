@@ -53,7 +53,7 @@
 
 ---
 
-## 🛠️ Deployment Instructions
+## 🛠️ Deployment Instructions (Linux/Termux & window)
 
 ### 📥 Protocol Initialization
 ```bash
@@ -76,19 +76,10 @@ python AH4-sms-boomer.py
 1. **Selection:** Choose between **GHOST** (Stealth) or **CHAOS** (Flood) protocols.
 2. **Proxy Config:**
    - **[1]** Direct IP (Expose Node)
-   - **[2]** Local Proxy (Load `proxies.txt`)
+   - **[2]** Local Proxy (recommend)
    - **[3]** Global Harvest (Auto-fetch thousands of nodes)
 3. **Targeting:** Enter the target node's address (Phone number).
 4. **Impact:** Monitor the real-time breach statistics and infiltration logs.
-
----
-
-## 🧬 Node Telemetry [System Info]
-The tool extracts and displays local machine vitals during initialization:
-- **Timestamp:** Network Time Protocol sync.
-- **Node ID:** Hostname and IP identifiers.
-- **Hardware:** MAC Address and CPU Architecture.
-- **Kernel:** Operating system and build version.
 
 ---
 
